@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import type { StoryChapter as Chapter } from "@/lib/story";
+import type { Polaroid, StoryChapter as Chapter } from "@/lib/story";
 import { AnimatedSectionTitle } from "@/components/animation/AnimatedSectionTitle";
 import { ScrollReveal } from "@/components/animation/ScrollReveal";
 import { PolaroidCard } from "./PolaroidCard";
@@ -14,10 +14,15 @@ import { PolaroidCard } from "./PolaroidCard";
 export function StoryChapter({
   chapter,
   index,
+  polaroids,
 }: {
   chapter: Chapter;
   index: number;
+  /** Kaertchen aus der Datenbank – ohne Eintraege gelten die des Kapitels. */
+  polaroids?: Polaroid[];
 }) {
+  const cards =
+    polaroids && polaroids.length > 0 ? polaroids : chapter.polaroids;
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -57,7 +62,7 @@ export function StoryChapter({
               className="absolute right-2 top-2"
             >
               <PolaroidCard
-                polaroid={chapter.polaroids[1] ?? chapter.polaroids[0]}
+                polaroid={cards[1] ?? cards[0]}
                 rotate={6}
                 className="max-w-[13rem]"
               />
@@ -67,7 +72,7 @@ export function StoryChapter({
               className="absolute bottom-2 left-2"
             >
               <PolaroidCard
-                polaroid={chapter.polaroids[0]}
+                polaroid={cards[0]}
                 rotate={-5}
                 className="max-w-[15rem]"
               />

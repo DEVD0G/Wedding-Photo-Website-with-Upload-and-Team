@@ -49,6 +49,17 @@ export interface CapsuleLetterItem {
   createdAt: string;
 }
 
+export interface PolaroidCardItem {
+  id: string;
+  section: string;
+  sortOrder: number;
+  caption: string;
+  note: string | null;
+  tone: string | null;
+  imageUrl: string | null;
+  createdAt: string;
+}
+
 export interface TeamInviteItem {
   id: string;
   label: string | null;
