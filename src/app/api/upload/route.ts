@@ -66,12 +66,19 @@ export async function GET() {
     checks.datenbankLesen = `FEHLER: ${reason(err)}`;
   }
 
-  // 3) Datenbank schreiben? (Probe-Eintrag anlegen und sofort löschen)
+  // 3) Datenbank schreiben? Probe-Eintrag in einer Transaktion anlegen
+  //    und löschen – schlägt das Löschen fehl, rollt alles zurück, sodass
+  //    nie ein "__diag__"-Brief in der Zeitkapsel zurückbleibt.
   try {
-    const probe = await prisma.guestbookEntry.create({
-      data: { name: "__diag__", message: "Schreibtest" },
+    await prisma.timeCapsuleLetter.deleteMany({
+      where: { author: "__diag__" },
     });
-    await prisma.guestbookEntry.delete({ where: { id: probe.id } });
+    await prisma.$transaction(async (tx) => {
+      const probe = await tx.timeCapsuleLetter.create({
+        data: { author: "__diag__", body: "Schreibtest" },
+      });
+      await tx.timeCapsuleLetter.delete({ where: { id: probe.id } });
+    });
     checks.datenbankSchreiben = "OK – beschreibbar";
   } catch (err) {
     checks.datenbankSchreiben = `FEHLER: ${reason(err)}`;

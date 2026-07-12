@@ -4,7 +4,6 @@ import { VISITOR_COOKIE } from "./auth";
 import type {
   MediaItem,
   CommentItem,
-  GuestbookItem,
   TeamInviteItem,
   GreetingItem,
   CapsuleLetterItem,
@@ -80,20 +79,6 @@ export function serializeComment(row: {
     id: row.id,
     author: row.author,
     body: row.body,
-    createdAt: row.createdAt.toISOString(),
-  };
-}
-
-export function serializeGuestbook(row: {
-  id: string;
-  name: string | null;
-  message: string;
-  createdAt: Date;
-}): GuestbookItem {
-  return {
-    id: row.id,
-    name: row.name,
-    message: row.message,
     createdAt: row.createdAt.toISOString(),
   };
 }

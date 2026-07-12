@@ -185,6 +185,32 @@
   transform: rotateY(180deg);
 }
 
+/* ---- Aufsteigende Scroll-Herzen ---- */
+@keyframes pm-heart-rise {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.55) rotate(0deg);
+    opacity: 0;
+  }
+  14% {
+    opacity: var(--pm-heart-opacity, 0.5);
+  }
+  70% {
+    opacity: var(--pm-heart-opacity, 0.5);
+  }
+  100% {
+    transform: translate3d(var(--pm-heart-sway, 24px), -46vh, 0) scale(1.05)
+      rotate(var(--pm-heart-rot, 10deg));
+    opacity: 0;
+  }
+}
+.pm-scroll-heart {
+  /* absolut im fixierten Overlay-Container, damit overflow-hidden greift */
+  position: absolute;
+  will-change: transform, opacity;
+  animation: pm-heart-rise var(--pm-heart-duration, 5s)
+    cubic-bezier(0.25, 0.55, 0.35, 1) forwards;
+}
+
 /* ---- Filmkörnung ---- */
 @keyframes pm-grain {
   0% { background-position: 0 0; }

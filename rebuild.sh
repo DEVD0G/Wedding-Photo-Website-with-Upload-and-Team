@@ -7,9 +7,14 @@
 #  startet den Dienst neu.
 #
 #  Aufruf:
-#     ./rebuild.sh                 (Standard: Pull + Build + Neustart)
-#     ./rebuild.sh --no-pull       (lokalen Stand bauen, kein git pull)
-#     ./rebuild.sh --no-restart    (nicht automatisch neu starten)
+#     ./rebuild.sh                   (Standard: Pull + Build + Neustart)
+#     ./rebuild.sh --no-pull         (lokalen Stand bauen, kein git pull)
+#     ./rebuild.sh --no-restart      (nicht automatisch neu starten)
+#     ./rebuild.sh --allow-data-loss (destruktive Schema-Aenderungen
+#                                     zulassen, z.B. einmalig noetig,
+#                                     wenn ein Bereich wie das Gaestebuch
+#                                     samt Tabelle entfernt wurde;
+#                                     vorher wird die DB gesichert)
 # ============================================================
 
 set -euo pipefail
@@ -26,10 +31,12 @@ die()   { echo -e "${C_ERR}  x${C_RST} $*" >&2; exit 1; }
 # ---- Parameter ---------------------------------------------
 DO_PULL="yes"
 DO_RESTART="yes"
+ALLOW_DATA_LOSS="no"
 for arg in "$@"; do
   case "$arg" in
-    --no-pull)    DO_PULL="no" ;;
-    --no-restart) DO_RESTART="no" ;;
+    --no-pull)         DO_PULL="no" ;;
+    --no-restart)      DO_RESTART="no" ;;
+    --allow-data-loss) ALLOW_DATA_LOSS="yes" ;;
     *) die "Unbekannte Option: $arg" ;;
   esac
 done
@@ -78,7 +85,20 @@ ok "Abhängigkeiten aktuell"
 
 # ---- 3. Datenbank-Schema abgleichen -----------------------
 info "Datenbank-Schema wird abgeglichen (Prisma) …"
-npm run db:push
+if [ "$ALLOW_DATA_LOSS" = "yes" ]; then
+  # Sicherung anlegen, bevor destruktive Aenderungen zugelassen werden.
+  DB_FILE="prisma/dev.db"
+  if [ -f "$DB_FILE" ]; then
+    BACKUP="${DB_FILE}.$(date +%Y%m%d-%H%M%S).bak"
+    cp "$DB_FILE" "$BACKUP"
+    ok "Datenbank gesichert: $BACKUP"
+  fi
+  npx prisma db push --accept-data-loss
+else
+  # Standard: bricht bei destruktiven Aenderungen bewusst ab.
+  # Dann ggf. einmalig mit ./rebuild.sh --allow-data-loss ausfuehren.
+  npx prisma db push
+fi
 ok "Datenbank ist aktuell"
 
 # ---- 4. Produktions-Build ---------------------------------

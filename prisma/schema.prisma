@@ -72,16 +72,6 @@ model PolaroidCard {
   @@index([section, sortOrder])
 }
 
-/// Ein Eintrag im Gaestebuch.
-model GuestbookEntry {
-  id        String   @id @default(cuid())
-  name      String?
-  message   String
-  createdAt DateTime @default(now())
-
-  @@index([createdAt])
-}
-
 /// Eine Audio- oder Video-Botschaft von Gaesten (Sprachmemo / Grußvideo).
 model Greeting {
   id           String    @id @default(cuid())

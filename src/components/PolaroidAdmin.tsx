@@ -42,6 +42,26 @@ export function PolaroidAdmin({ cards, onChange, sections }: Props) {
     [cards],
   );
 
+  // Kaertchen aus nicht mehr existierenden Bereichen (z.B. entferntes
+  // Kapitel) trotzdem anzeigen, damit sie loeschbar bleiben.
+  const orphanSections = useMemo(() => {
+    const known = new Set(sections.map((s) => s.key));
+    const extra = new Set<string>();
+    cards.forEach((c) => {
+      if (!known.has(c.section)) extra.add(c.section);
+    });
+    return [...extra].sort().map((key) => ({
+      key,
+      label: `Nicht mehr verwendete Sektion („${key}“)`,
+      orphan: true as const,
+    }));
+  }, [cards, sections]);
+
+  const renderSections: (PolaroidSectionDef & { orphan?: boolean })[] = [
+    ...sections,
+    ...orphanSections,
+  ];
+
   function cardsOf(section: string): PolaroidCardItem[] {
     return sorted.filter((c) => c.section === section);
   }
@@ -184,7 +204,7 @@ export function PolaroidAdmin({ cards, onChange, sections }: Props) {
       </p>
 
       <div className="mt-6 space-y-8">
-        {sections.map((section) => {
+        {renderSections.map((section) => {
           const list = cardsOf(section.key);
           return (
             <section key={section.key}>
@@ -192,7 +212,7 @@ export function PolaroidAdmin({ cards, onChange, sections }: Props) {
                 <h2 className="font-display text-2xl text-ink">
                   {section.label}
                 </h2>
-                {list.length > 0 && (
+                {!section.orphan && list.length > 0 && (
                   <button
                     onClick={() => addCard(section.key)}
                     disabled={busy === section.key}
@@ -203,6 +223,14 @@ export function PolaroidAdmin({ cards, onChange, sections }: Props) {
                   </button>
                 )}
               </div>
+
+              {section.orphan && (
+                <p className="mt-3 rounded-2xl bg-blush/40 p-3 text-xs text-rosedeep">
+                  Dieser Bereich existiert auf der Webseite nicht mehr – die
+                  Kärtchen werden nirgends angezeigt und können hier gelöscht
+                  werden.
+                </p>
+              )}
 
               {section.maxVisible !== undefined &&
                 list.length > section.maxVisible && (
