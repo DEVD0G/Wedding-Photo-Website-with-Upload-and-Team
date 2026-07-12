@@ -12,6 +12,8 @@ import {
   serializeGuestbook,
   serializeInvite,
 } from "@/lib/media";
+import { getAllPolaroidCards } from "@/lib/polaroids";
+import { POLAROID_SECTIONS } from "@/lib/polaroidSections";
 import { AdminDashboard } from "@/components/AdminDashboard";
 
 export const dynamic = "force-dynamic";
@@ -33,13 +35,14 @@ export default async function AdminPage() {
   const proto = h.get("x-forwarded-proto")?.split(",")[0].trim() || "http";
   const baseUrl = host ? `${proto}://${host}` : siteConfig.siteUrl;
 
-  const [media, guestbookRows, inviteRows, greetings, letterRows] =
+  const [media, guestbookRows, inviteRows, greetings, letterRows, polaroids] =
     await Promise.all([
       getAllMedia(),
       prisma.guestbookEntry.findMany({ orderBy: { createdAt: "desc" } }),
       prisma.teamInvite.findMany({ orderBy: { createdAt: "desc" } }),
       getAllGreetings(),
       prisma.timeCapsuleLetter.findMany({ orderBy: { createdAt: "asc" } }),
+      getAllPolaroidCards(),
     ]);
 
   const qrTarget = `${baseUrl}/upload`;
@@ -62,6 +65,8 @@ export default async function AdminPage() {
         initialInvites={inviteRows.map((row) => serializeInvite(row, baseUrl))}
         initialGreetings={greetings}
         initialLetters={letterRows.map(serializeCapsuleLetter)}
+        initialPolaroids={polaroids}
+        polaroidSections={POLAROID_SECTIONS}
         qrDataUrl={qrDataUrl}
         siteUrl={qrTarget}
       />

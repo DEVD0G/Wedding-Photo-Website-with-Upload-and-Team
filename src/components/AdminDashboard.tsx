@@ -31,8 +31,11 @@ import type {
   GreetingItem,
   GuestbookItem,
   MediaItem,
+  PolaroidCardItem,
   TeamInviteItem,
 } from "@/lib/types";
+import type { PolaroidSectionDef } from "@/lib/polaroidSections";
+import { PolaroidAdmin } from "./PolaroidAdmin";
 import { formatBytes, formatDateTime } from "@/lib/format";
 
 interface Props {
@@ -41,11 +44,20 @@ interface Props {
   initialInvites: TeamInviteItem[];
   initialGreetings: GreetingItem[];
   initialLetters: CapsuleLetterItem[];
+  initialPolaroids: PolaroidCardItem[];
+  polaroidSections: PolaroidSectionDef[];
   qrDataUrl: string;
   siteUrl: string;
 }
 
-type Tab = "media" | "greetings" | "guestbook" | "capsule" | "team" | "tools";
+type Tab =
+  | "media"
+  | "polaroids"
+  | "greetings"
+  | "guestbook"
+  | "capsule"
+  | "team"
+  | "tools";
 type MediaFilter = "all" | "visible" | "hidden" | "image" | "video";
 
 export function AdminDashboard({
@@ -54,6 +66,8 @@ export function AdminDashboard({
   initialInvites,
   initialGreetings,
   initialLetters,
+  initialPolaroids,
+  polaroidSections,
   qrDataUrl,
   siteUrl,
 }: Props) {
@@ -63,6 +77,10 @@ export function AdminDashboard({
   const [invites, setInvites] = useState<TeamInviteItem[]>(initialInvites);
   const [greetings, setGreetings] = useState<GreetingItem[]>(initialGreetings);
   const [letters, setLetters] = useState<CapsuleLetterItem[]>(initialLetters);
+  // Lebt hier statt in PolaroidAdmin, damit Aenderungen einen
+  // Tab-Wechsel (Unmount der Tab-Komponente) ueberleben.
+  const [polaroids, setPolaroids] =
+    useState<PolaroidCardItem[]>(initialPolaroids);
   const [filter, setFilter] = useState<MediaFilter>("all");
   const [expanded, setExpanded] = useState<string | null>(null);
   const [comments, setComments] = useState<Record<string, CommentItem[]>>({});
@@ -413,6 +431,7 @@ export function AdminDashboard({
         {(
           [
             ["media", "Foto-Verwaltung"],
+            ["polaroids", "Polaroids"],
             ["greetings", "Botschaften"],
             ["guestbook", "Gästebuch"],
             ["capsule", "Zeitkapsel"],
@@ -470,6 +489,17 @@ export function AdminDashboard({
               ))}
             </div>
           )}
+        </div>
+      )}
+
+      {/* ---------- Polaroid-Kaertchen ---------- */}
+      {tab === "polaroids" && (
+        <div className="mt-6">
+          <PolaroidAdmin
+            cards={polaroids}
+            onChange={setPolaroids}
+            sections={polaroidSections}
+          />
         </div>
       )}
 

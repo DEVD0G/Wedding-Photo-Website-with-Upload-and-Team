@@ -8,7 +8,7 @@ import { EASE_OUT, staggerContainer, viewportOnce } from "@/lib/motion";
 import { MotionButton } from "@/components/animation/MotionButton";
 import { FloatingHearts } from "@/components/animation/FloatingHearts";
 import { PolaroidCard } from "./PolaroidCard";
-import { filmPolaroids } from "@/lib/story";
+import { filmPolaroids, type Polaroid } from "@/lib/story";
 
 const LINES = [
   "Und unter all den Momenten,",
@@ -21,7 +21,11 @@ const LINES = [
  * schweben langsam aus dem Bild, der letzte Text erscheint Zeile für
  * Zeile – gefolgt von den abschließenden Buttons.
  */
-export function EmotionalFinale() {
+export function EmotionalFinale({
+  polaroids = filmPolaroids,
+}: {
+  polaroids?: Polaroid[];
+}) {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -51,9 +55,9 @@ export function EmotionalFinale() {
         className="pointer-events-none absolute inset-x-0 top-10 flex justify-center gap-6"
         aria-hidden
       >
-        {filmPolaroids.slice(0, 3).map((p, i) => (
+        {polaroids.slice(0, 3).map((p, i) => (
           <PolaroidCard
-            key={p.caption}
+            key={`${p.caption}-${i}`}
             polaroid={p}
             rotate={(i - 1) * 8}
             className="hidden max-w-[9rem] sm:block"

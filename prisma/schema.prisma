@@ -54,6 +54,24 @@ model Comment {
   @@index([mediaId])
 }
 
+/// Ein anpassbares Polaroid-Kaertchen (Bild + zwei Textzeilen).
+/// Ueber das Feld `section` wird gesteuert, wo auf der Seite das
+/// Kaertchen erscheint (z.B. "film" oder "kapitel-1").
+model PolaroidCard {
+  id        String   @id @default(cuid())
+  section   String // Bereich der Webseite, zu dem das Kaertchen gehoert
+  sortOrder Int      @default(0)
+  caption   String // geschwungene Hauptzeile (Titel)
+  note      String? // Grossbuchstaben-Unterzeile (Untertitel)
+  tone      String? // Fallback-Farbverlauf, solange kein Bild vorhanden ist
+  filename  String?  @unique // Bilddatei im Upload-Ordner
+  mimeType  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([section, sortOrder])
+}
+
 /// Ein Eintrag im Gaestebuch.
 model GuestbookEntry {
   id        String   @id @default(cuid())

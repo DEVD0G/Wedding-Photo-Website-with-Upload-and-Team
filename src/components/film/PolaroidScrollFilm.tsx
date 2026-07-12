@@ -4,7 +4,7 @@ import { useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import { filmPolaroids } from "@/lib/story";
+import { filmPolaroids, type Polaroid } from "@/lib/story";
 import { AnimatedSectionTitle } from "@/components/animation/AnimatedSectionTitle";
 import { PolaroidCard } from "./PolaroidCard";
 
@@ -23,8 +23,14 @@ const LAYOUT = [
 /**
  * Filmische Polaroid-Sequenz: Die Bilder schweben beim Scrollen
  * nacheinander ins Bild, kippen leicht und ziehen mit Parallax weiter.
+ * Die Kaertchen kommen aus der Datenbank (Admin-Dashboard) und fallen
+ * ohne eigene Eintraege auf die eingebauten Standard-Kaertchen zurueck.
  */
-export function PolaroidScrollFilm() {
+export function PolaroidScrollFilm({
+  polaroids = filmPolaroids,
+}: {
+  polaroids?: Polaroid[];
+}) {
   const container = useRef<HTMLDivElement>(null);
 
   useGSAP(
@@ -70,9 +76,9 @@ export function PolaroidScrollFilm() {
         ref={container}
         className="mx-auto mt-12 flex max-w-2xl flex-col gap-10 px-5 sm:gap-4"
       >
-        {filmPolaroids.map((polaroid, i) => (
+        {polaroids.map((polaroid, i) => (
           <div
-            key={polaroid.caption}
+            key={`${polaroid.caption}-${i}`}
             className={`pm-film-polaroid ${LAYOUT[i % LAYOUT.length].align}`}
           >
             <PolaroidCard
