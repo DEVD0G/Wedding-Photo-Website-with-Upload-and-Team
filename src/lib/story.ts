@@ -43,7 +43,7 @@ export const filmPolaroids: Polaroid[] = [
   { caption: "31.07.2026", note: "der schönste Tag", tone: NIGHT },
 ];
 
-/** Die sechs Kapitel von „Unsere Geschichte". */
+/** Die Kapitel von „Unsere Geschichte". */
 export const storyChapters: StoryChapter[] = [
   {
     numeral: "I",
@@ -108,19 +108,6 @@ export const storyChapters: StoryChapter[] = [
     polaroids: [
       { caption: "Das Ja-Wort", note: "31.07.2026", tone: GOLD },
       { caption: "Mr. & Mrs. Petersen", tone: WARM },
-    ],
-  },
-  {
-    numeral: "VI",
-    eyebrow: "Kapitel Sechs",
-    title: "Unser Für immer",
-    text: "Und nun beginnt das schönste Kapitel: unser gemeinsames Leben. Hand in Hand, Tag für Tag, für immer und einen Tag.",
-    quote: "„Das Beste kommt erst noch – und wir erleben es zusammen.“",
-    tone: "dark",
-    background: "linear-gradient(160deg,#352C25,#241E1A)",
-    polaroids: [
-      { caption: "Für immer wir", note: "Kapitel ohne Ende", tone: BLUSH },
-      { caption: "Unser Zuhause", tone: SAND },
     ],
   },
 ];

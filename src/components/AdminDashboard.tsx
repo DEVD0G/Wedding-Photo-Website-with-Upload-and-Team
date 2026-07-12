@@ -29,7 +29,6 @@ import type {
   CapsuleLetterItem,
   CommentItem,
   GreetingItem,
-  GuestbookItem,
   MediaItem,
   PolaroidCardItem,
   TeamInviteItem,
@@ -40,7 +39,6 @@ import { formatBytes, formatDateTime } from "@/lib/format";
 
 interface Props {
   initialMedia: MediaItem[];
-  initialGuestbook: GuestbookItem[];
   initialInvites: TeamInviteItem[];
   initialGreetings: GreetingItem[];
   initialLetters: CapsuleLetterItem[];
@@ -54,7 +52,6 @@ type Tab =
   | "media"
   | "polaroids"
   | "greetings"
-  | "guestbook"
   | "capsule"
   | "team"
   | "tools";
@@ -62,7 +59,6 @@ type MediaFilter = "all" | "visible" | "hidden" | "image" | "video";
 
 export function AdminDashboard({
   initialMedia,
-  initialGuestbook,
   initialInvites,
   initialGreetings,
   initialLetters,
@@ -73,7 +69,6 @@ export function AdminDashboard({
 }: Props) {
   const [tab, setTab] = useState<Tab>("media");
   const [media, setMedia] = useState<MediaItem[]>(initialMedia);
-  const [guestbook, setGuestbook] = useState<GuestbookItem[]>(initialGuestbook);
   const [invites, setInvites] = useState<TeamInviteItem[]>(initialInvites);
   const [greetings, setGreetings] = useState<GreetingItem[]>(initialGreetings);
   const [letters, setLetters] = useState<CapsuleLetterItem[]>(initialLetters);
@@ -271,24 +266,6 @@ export function AdminDashboard({
     }
   }
 
-  /* ---------- Gästebuch ---------- */
-
-  async function deleteGuestbook(id: string) {
-    if (!confirm("Diesen Gästebuch-Eintrag löschen?")) return;
-    setBusy(id);
-    try {
-      const res = await fetch(`/api/admin/guestbook/${id}`, {
-        method: "DELETE",
-      });
-      if (res.ok) {
-        setGuestbook((prev) => prev.filter((e) => e.id !== id));
-        toast.success("Eintrag gelöscht.");
-      }
-    } finally {
-      setBusy(null);
-    }
-  }
-
   /* ---------- Zeitkapsel ---------- */
 
   async function createLetter(e: React.FormEvent) {
@@ -433,7 +410,6 @@ export function AdminDashboard({
             ["media", "Foto-Verwaltung"],
             ["polaroids", "Polaroids"],
             ["greetings", "Botschaften"],
-            ["guestbook", "Gästebuch"],
             ["capsule", "Zeitkapsel"],
             ["team", "Team"],
             ["tools", "QR-Code & Export"],
@@ -536,41 +512,6 @@ export function AdminDashboard({
               ))}
             </div>
           )}
-        </div>
-      )}
-
-      {/* ---------- Gästebuch ---------- */}
-      {tab === "guestbook" && (
-        <div className="mt-6 space-y-3">
-          {guestbook.length === 0 && (
-            <p className="card p-8 text-center text-cocoa">
-              Noch keine Gästebuch-Einträge.
-            </p>
-          )}
-          {guestbook.map((entry) => (
-            <div
-              key={entry.id}
-              className="card flex items-start justify-between gap-4 p-4"
-            >
-              <div>
-                <p className="font-display text-lg text-ink">
-                  {entry.name || "Ein lieber Gast"}
-                </p>
-                <p className="text-xs text-muted">
-                  {formatDateTime(entry.createdAt)}
-                </p>
-                <p className="mt-1 text-sm text-cocoa">{entry.message}</p>
-              </div>
-              <button
-                onClick={() => deleteGuestbook(entry.id)}
-                disabled={busy === entry.id}
-                className="btn shrink-0 px-3 py-2 text-xs text-rosedeep hover:bg-rosedeep/10"
-              >
-                <Trash2 size={14} />
-                Löschen
-              </button>
-            </div>
-          ))}
         </div>
       )}
 

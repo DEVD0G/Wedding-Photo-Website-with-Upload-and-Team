@@ -17,7 +17,11 @@ export interface PolaroidSectionDef {
 }
 
 export const POLAROID_SECTIONS: PolaroidSectionDef[] = [
-  { key: "film", label: "Startseite – Polaroid-Filmsequenz" },
+  {
+    key: "film",
+    label: "Startseite – Abschluss (schwebende Polaroids)",
+    maxVisible: 3,
+  },
   ...storyChapters.map((chapter, i) => ({
     key: `kapitel-${i + 1}`,
     label: `Kapitel ${chapter.numeral} – ${chapter.title}`,

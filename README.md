@@ -33,17 +33,15 @@ vom Hochzeitstag hoch und teilen sie in einer eleganten Galerie.
   Herzen/Likes und Vorschau
 - **Detailansicht** als Modal mit großem Bild/Video, Nachricht, Kommentaren,
   Like- und Download-Funktion sowie Tastatur-Navigation
-- **Gästebuch** für Glückwünsche in liebevoller Kartenansicht
 - **Slideshow-Modus** für Beamer/Fernseher inkl. Vollbild und Auto-Wiedergabe
 - **Admin-Bereich** (passwortgeschützt): Medien freigeben/ausblenden/löschen,
-  Kommentare und Gästebuch-Einträge löschen, QR-Code anzeigen, ZIP-Export
+  Kommentare löschen, QR-Code anzeigen, ZIP-Export
 - **Optionaler Gäste-Code** schützt die ganze Seite
 - Romantische Lade- und Leerzustände, Datenschutz-Hinweis beim Upload,
   sichere Dateiprüfung (Magic Bytes), Mobile-First-Design
 - **Filmisches Storytelling** auf der Startseite: Cinematic Intro,
-  Polaroid-Scroll, sechs Story-Kapitel, „100 Gründe", versteckte
+  aufsteigende Herzen beim Scrollen, fünf Story-Kapitel, versteckte
   Überraschung, Three.js-Sternenhimmel, Zeitkapsel & emotionaler Abschluss
-- **Audio-Gästebuch** (Sprachmemos aufnehmen) auf der Gästebuch-Seite
 - **Video-Botschaften** unter `/botschaften` – mit Admin-Freigabe und
   zeitgesteuerten Überraschungsvideos
 - **Zeitkapsel**: Briefe ans Zukunfts-Ich, versiegelt bis zum 1. Hochzeitstag
@@ -63,7 +61,7 @@ vom Hochzeitstag hoch und teilen sie in einer eleganten Galerie.
 ```
 .
 ├── prisma/
-│   └── schema.prisma          Datenbankmodell (Media, Like, Comment, Gästebuch)
+│   └── schema.prisma          Datenbankmodell (Media, Like, Comment, …)
 ├── uploads/                   Hochgeladene Medien (nicht im Git)
 ├── src/
 │   ├── middleware.ts          Besucher-ID, Admin-Schutz, Gäste-Code
@@ -73,7 +71,6 @@ vom Hochzeitstag hoch und teilen sie in einer eleganten Galerie.
 │   │   ├── page.tsx           Startseite
 │   │   ├── upload/            Upload-Seite
 │   │   ├── galerie/           Galerie
-│   │   ├── gaestebuch/        Gästebuch
 │   │   ├── slideshow/         Slideshow-Modus
 │   │   ├── willkommen/        Gäste-Code-Eingabe
 │   │   ├── admin/             Admin-Bereich + Login
@@ -181,7 +178,7 @@ Erreichbar unter **`/admin`**. Die Anmeldung erfolgt mit `ADMIN_PASSWORD`.
 Möglichkeiten:
 
 - Medien **freigeben** oder **ausblenden** und endgültig **löschen**
-- **Kommentare** sowie **Gästebuch-Einträge** löschen
+- **Kommentare** löschen
 - **QR-Code** anzeigen und drucken
 - alle Medien als **ZIP-Archiv** herunterladen
 

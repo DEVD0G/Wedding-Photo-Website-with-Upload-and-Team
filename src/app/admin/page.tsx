@@ -9,7 +9,6 @@ import {
   getAllGreetings,
   getAllMedia,
   serializeCapsuleLetter,
-  serializeGuestbook,
   serializeInvite,
 } from "@/lib/media";
 import { getAllPolaroidCards } from "@/lib/polaroids";
@@ -35,10 +34,9 @@ export default async function AdminPage() {
   const proto = h.get("x-forwarded-proto")?.split(",")[0].trim() || "http";
   const baseUrl = host ? `${proto}://${host}` : siteConfig.siteUrl;
 
-  const [media, guestbookRows, inviteRows, greetings, letterRows, polaroids] =
+  const [media, inviteRows, greetings, letterRows, polaroids] =
     await Promise.all([
       getAllMedia(),
-      prisma.guestbookEntry.findMany({ orderBy: { createdAt: "desc" } }),
       prisma.teamInvite.findMany({ orderBy: { createdAt: "desc" } }),
       getAllGreetings(),
       prisma.timeCapsuleLetter.findMany({ orderBy: { createdAt: "asc" } }),
@@ -61,7 +59,6 @@ export default async function AdminPage() {
     <div className="mx-auto max-w-5xl px-5 py-10">
       <AdminDashboard
         initialMedia={media}
-        initialGuestbook={guestbookRows.map(serializeGuestbook)}
         initialInvites={inviteRows.map((row) => serializeInvite(row, baseUrl))}
         initialGreetings={greetings}
         initialLetters={letterRows.map(serializeCapsuleLetter)}

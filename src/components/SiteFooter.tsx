@@ -39,9 +39,6 @@ export function SiteFooter() {
             <Link href="/botschaften" className="transition-colors hover:text-ink">
               Botschaften
             </Link>
-            <Link href="/gaestebuch" className="transition-colors hover:text-ink">
-              Gästebuch
-            </Link>
             <Link href="/slideshow" className="transition-colors hover:text-ink">
               Slideshow
             </Link>

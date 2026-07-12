@@ -13,7 +13,6 @@ const NAV = [
   { href: "/upload", label: "Hochladen" },
   { href: "/galerie", label: "Galerie" },
   { href: "/botschaften", label: "Botschaften" },
-  { href: "/gaestebuch", label: "Gästebuch" },
   { href: "/slideshow", label: "Slideshow" },
 ];
 
