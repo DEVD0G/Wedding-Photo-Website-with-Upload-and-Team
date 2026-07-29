@@ -2,7 +2,6 @@ import { storyChapters } from "@/lib/story";
 import { getPolaroidsForSection } from "@/lib/polaroids";
 import { AnimatedHero } from "@/components/home/AnimatedHero";
 import { StoryChapter } from "@/components/film/StoryChapter";
-import { BrideSurpriseSection } from "@/components/film/BrideSurpriseSection";
 import { StarrySkySection } from "@/components/film/StarrySkySection";
 import { TimeCapsuleSection } from "@/components/film/TimeCapsuleSection";
 import { EmotionalFinale } from "@/components/film/EmotionalFinale";
@@ -13,15 +12,14 @@ export const dynamic = "force-dynamic";
 
 /**
  * Die Startseite ist ein interaktiver Liebesfilm: aufsteigende Herzen
- * beim Scrollen, die Story-Kapitel, eine versteckte Überraschung, ein
+ * beim Scrollen, die Story-Kapitel mit ihren zwei Fotos, ein
  * Sternenhimmel, die Zeitkapsel und ein emotionaler Abschluss.
- * Alle Polaroid-Kärtchen sind über das Admin-Dashboard anpassbar.
+ * Die zwei Fotos pro Kapitel sind über das Admin-Dashboard anpassbar.
  */
 export default async function HomePage() {
-  const [finaleCards, ...chapterCards] = await Promise.all([
-    getPolaroidsForSection("film"),
-    ...storyChapters.map((_, i) => getPolaroidsForSection(`kapitel-${i + 1}`)),
-  ]);
+  const chapterCards = await Promise.all(
+    storyChapters.map((_, i) => getPolaroidsForSection(`kapitel-${i + 1}`)),
+  );
 
   return (
     <div className="overflow-x-clip">
@@ -42,9 +40,6 @@ export default async function HomePage() {
         />
       ))}
 
-      {/* Versteckte Überraschung für die Braut */}
-      <BrideSurpriseSection />
-
       {/* Digitaler Sternenhimmel */}
       <StarrySkySection />
 
@@ -52,7 +47,7 @@ export default async function HomePage() {
       <TimeCapsuleSection />
 
       {/* Emotionaler Abschluss */}
-      <EmotionalFinale polaroids={finaleCards} />
+      <EmotionalFinale />
     </div>
   );
 }

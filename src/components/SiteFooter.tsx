@@ -42,9 +42,6 @@ export function SiteFooter() {
             <Link href="/slideshow" className="transition-colors hover:text-ink">
               Slideshow
             </Link>
-            <Link href="/wall" className="transition-colors hover:text-ink">
-              Live-Wand
-            </Link>
             <Link href="/admin" className="transition-colors hover:text-ink">
               Admin
             </Link>

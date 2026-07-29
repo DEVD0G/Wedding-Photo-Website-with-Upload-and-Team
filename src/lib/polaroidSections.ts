@@ -1,42 +1,47 @@
-import { filmPolaroids, storyChapters, type Polaroid } from "./story";
+import { storyChapters, type Polaroid } from "./story";
 
 /**
- * Client-sichere Definition der Polaroid-Bereiche (keine Server-Importe).
+ * Client-sichere Definition der Kapitel-Foto-Bereiche (keine Server-Importe).
  *
- * Jede Sektion beschreibt eine Stelle der Webseite, an der die
- * Polaroid-Kaertchen erscheinen. Neue Bereiche (z.B. Galerie oder
- * Gaestebuch) lassen sich hier ergaenzen – Dashboard-Eingabefelder und
- * Frontend-Styling greifen dann automatisch.
+ * Jedes Kapitel der Startseite zeigt zwei Fotos. Über diese Sektionen
+ * werden im Admin-Dashboard genau diese zwei Fotos je Kapitel gesetzt.
  */
+
+export interface PolaroidSlotDef {
+  caption: string;
+  note: string;
+}
 
 export interface PolaroidSectionDef {
   key: string;
   label: string;
-  /** Wie viele Kaertchen die Seite in dieser Sektion tatsaechlich zeigt. */
-  maxVisible?: number;
+  /** Feste Foto-Plätze dieser Sektion (Titel/Untertitel als Vorgabe). */
+  slots: PolaroidSlotDef[];
 }
 
-export const POLAROID_SECTIONS: PolaroidSectionDef[] = [
-  {
-    key: "film",
-    label: "Startseite – Abschluss (schwebende Polaroids)",
-    maxVisible: 3,
-  },
-  ...storyChapters.map((chapter, i) => ({
+export const POLAROID_SECTIONS: PolaroidSectionDef[] = storyChapters.map(
+  (chapter, i) => ({
     key: `kapitel-${i + 1}`,
     label: `Kapitel ${chapter.numeral} – ${chapter.title}`,
-    maxVisible: 2,
-  })),
-];
+    slots: chapter.polaroids.map((p) => ({
+      caption: p.caption,
+      note: p.note ?? "",
+    })),
+  }),
+);
 
 /** Prueft, ob ein Sektions-Slug zu einer bekannten Sektion gehoert. */
 export function isKnownSection(section: string): boolean {
   return POLAROID_SECTIONS.some((s) => s.key === section);
 }
 
+/** Anzahl der Foto-Plaetze einer Sektion. */
+export function slotCountFor(section: string): number {
+  return POLAROID_SECTIONS.find((s) => s.key === section)?.slots.length ?? 0;
+}
+
 /** Eingebaute Standard-Kaertchen je Sektion (Fallback ohne DB-Eintraege). */
 export function defaultPolaroidsFor(section: string): Polaroid[] {
-  if (section === "film") return filmPolaroids;
   const match = /^kapitel-(\d+)$/.exec(section);
   if (match) {
     return storyChapters[Number(match[1]) - 1]?.polaroids ?? [];
