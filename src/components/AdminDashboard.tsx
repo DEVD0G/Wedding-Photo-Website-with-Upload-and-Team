@@ -408,7 +408,7 @@ export function AdminDashboard({
         {(
           [
             ["media", "Foto-Verwaltung"],
-            ["polaroids", "Polaroids"],
+            ["polaroids", "Kapitel-Fotos"],
             ["greetings", "Botschaften"],
             ["capsule", "Zeitkapsel"],
             ["team", "Team"],

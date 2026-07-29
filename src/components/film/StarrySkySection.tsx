@@ -2,8 +2,6 @@
 
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
-import { MapPin } from "lucide-react";
-import { siteConfig } from "@/lib/config";
 import { EASE_OUT, viewportOnce } from "@/lib/motion";
 
 // Der Three.js-Canvas wird nur im Browser geladen.
@@ -13,7 +11,8 @@ const StarrySkyCanvas = dynamic(() => import("./StarrySkyCanvas"), {
 
 /**
  * Animierter Sternenhimmel mit Three.js – „Der Himmel über unserem
- * Moment". Darunter Datum, Ort und ein romantischer Text.
+ * Moment". Bewusst reduziert: nur die goldene Zeile und die Überschrift
+ * über dem Sternenhimmel.
  */
 export function StarrySkySection() {
   return (
@@ -33,7 +32,7 @@ export function StarrySkySection() {
         }}
       />
 
-      {/* Text-Ebene */}
+      {/* Text-Ebene – nur goldene Zeile + Überschrift */}
       <motion.div
         className="relative z-10 mx-auto max-w-2xl px-5 text-center"
         initial={{ opacity: 0, y: 30 }}
@@ -47,18 +46,6 @@ export function StarrySkySection() {
         <h2 className="mt-3 font-display text-4xl text-ivory sm:text-6xl">
           Unsere Sterne
         </h2>
-
-        <p className="mt-6 font-script text-3xl text-gold-gradient sm:text-4xl">
-          {siteConfig.weddingDate}
-        </p>
-        <p className="mt-2 flex items-center justify-center gap-1.5 text-sm text-ivory/65">
-          <MapPin size={14} className="text-gold" />
-          {siteConfig.weddingLocation || "Ort der Hochzeit"}
-        </p>
-
-        <p className="mx-auto mt-7 max-w-md text-lg italic leading-relaxed text-ivory/80">
-          „An diesem Tag schreiben wir unsere Geschichte in den Himmel.“
-        </p>
       </motion.div>
 
       <span className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-noir to-transparent" />

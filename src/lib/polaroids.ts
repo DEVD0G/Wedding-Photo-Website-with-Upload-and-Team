@@ -51,8 +51,11 @@ export function toDisplayPolaroid(row: PolaroidRow): Polaroid {
 }
 
 /**
- * Kaertchen einer Sektion fuers Frontend. Ohne eigene Eintraege werden
- * die eingebauten Standard-Kaertchen der Sektion geliefert.
+ * Fotos einer Sektion fuers Frontend. Startpunkt sind die eingebauten
+ * Standard-Kaertchen; vorhandene DB-Kaertchen ueberschreiben ihren
+ * jeweiligen Platz (per sortOrder). So wirkt es auch, wenn nur eines
+ * der beiden Kapitel-Fotos gesetzt wurde – der andere Platz bleibt beim
+ * Standard, statt doppelt zu erscheinen.
  */
 export async function getPolaroidsForSection(
   section: string,
@@ -63,8 +66,17 @@ export async function getPolaroidsForSection(
       orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
     })
     .catch(() => [] as PolaroidRow[]);
-  if (rows.length === 0) return defaultPolaroidsFor(section);
-  return rows.map(toDisplayPolaroid);
+
+  const result = [...defaultPolaroidsFor(section)];
+  for (const row of rows) {
+    const card = toDisplayPolaroid(row);
+    if (row.sortOrder >= 0 && row.sortOrder < result.length) {
+      result[row.sortOrder] = card;
+    } else {
+      result.push(card);
+    }
+  }
+  return result;
 }
 
 /** Alle Kaertchen fuer die Admin-Verwaltung. */

@@ -36,6 +36,19 @@ export async function POST(req: Request) {
   const caption = sanitizeText(form.get("caption"), 80) || "Neues Kärtchen";
   const note = sanitizeText(form.get("note"), 60) || null;
 
+  // Optionaler fester Foto-Platz (Slot). Ohne Angabe wird angehaengt.
+  let slot: number | null = null;
+  if (form.has("sortOrder")) {
+    const parsed = Number(form.get("sortOrder"));
+    if (!Number.isInteger(parsed) || parsed < 0 || parsed > 100000) {
+      return NextResponse.json(
+        { error: "Ungültiger Foto-Platz." },
+        { status: 400 },
+      );
+    }
+    slot = parsed;
+  }
+
   let filename: string | null = null;
   let mimeType: string | null = null;
   const image = form.get("image");
@@ -64,7 +77,7 @@ export async function POST(req: Request) {
         caption,
         note,
         tone: POLAROID_TONES[count % POLAROID_TONES.length],
-        sortOrder: (last?.sortOrder ?? -1) + 1,
+        sortOrder: slot ?? (last?.sortOrder ?? -1) + 1,
         filename,
         mimeType,
       },

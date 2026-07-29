@@ -7,8 +7,6 @@ import { siteConfig } from "@/lib/config";
 import { EASE_OUT, staggerContainer, viewportOnce } from "@/lib/motion";
 import { MotionButton } from "@/components/animation/MotionButton";
 import { FloatingHearts } from "@/components/animation/FloatingHearts";
-import { PolaroidCard } from "./PolaroidCard";
-import { filmPolaroids, type Polaroid } from "@/lib/story";
 
 const LINES = [
   "Und unter all den Momenten,",
@@ -17,23 +15,12 @@ const LINES = [
 ];
 
 /**
- * Emotionaler Abschluss: Der Hintergrund wird dunkler, Polaroids
- * schweben langsam aus dem Bild, der letzte Text erscheint Zeile für
- * Zeile – gefolgt von den abschließenden Buttons.
+ * Emotionaler Abschluss: Der Hintergrund wird dunkler, der letzte Text
+ * erscheint Zeile für Zeile – gefolgt von den abschließenden Buttons.
  */
-export function EmotionalFinale({
-  polaroids = filmPolaroids,
-}: {
-  polaroids?: Polaroid[];
-}) {
+export function EmotionalFinale() {
   const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
-
-  const poFloat = useTransform(scrollYProgress, [0, 1], ["0%", "-160%"]);
-  const poFade = useTransform(scrollYProgress, [0.1, 0.5], [0.85, 0]);
+  useScroll({ target: ref, offset: ["start end", "end start"] });
 
   function watchAgain() {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -49,23 +36,7 @@ export function EmotionalFinale({
     >
       <FloatingHearts count={10} />
 
-      {/* davonschwebende Polaroids */}
-      <motion.div
-        style={{ y: poFloat, opacity: poFade }}
-        className="pointer-events-none absolute inset-x-0 top-10 flex justify-center gap-6"
-        aria-hidden
-      >
-        {polaroids.slice(0, 3).map((p, i) => (
-          <PolaroidCard
-            key={`${p.caption}-${i}`}
-            polaroid={p}
-            rotate={(i - 1) * 8}
-            className="hidden max-w-[9rem] sm:block"
-          />
-        ))}
-      </motion.div>
-
-      <div className="relative mx-auto max-w-2xl px-5 pt-44 text-center sm:pt-52">
+      <div className="relative mx-auto max-w-2xl px-5 pt-10 text-center sm:pt-16">
         <motion.div
           variants={staggerContainer(0.5)}
           initial="hidden"
